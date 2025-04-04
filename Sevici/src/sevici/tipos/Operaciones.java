@@ -9,10 +9,13 @@ import java.util.stream.Collectors;
 
 public class Operaciones {
 	
-	public  static List<Estacion> getEstacionesBicisDisponibles(List<Estacion> estaciones, Integer k){
+	public static List<Estacion> getEstacionesBicisDisponiblesNoK(List<Estacion> estaciones){
+		return estaciones.stream().filter(e->e.getTieneBicis()).toList();
+	}
+	
+	public static List<Estacion> getEstacionesBicisDisponibles(List<Estacion> estaciones, Integer k){
 		return estaciones.stream()
-				.filter(e->e.getBicisDisponibles()>=k)
-				.collect(Collectors.toCollection(ArrayList::new));
+				.filter(e->e.getBicisDisponibles()>=k).toList();
 	}
 	
 	public static SortedSet<Estacion> getEstacionesCercanas(List<Estacion> estaciones, Coordenadas cs, Double distancia) {
@@ -24,7 +27,8 @@ public class Operaciones {
 	
 	public static Estacion getEstacionMasBicisDisponibles(List<Estacion> estaciones) {
 		return estaciones.stream()
-				.max(Comparator.comparing(e->e.getBicisDisponibles())).orElse(null);
+				.max(Comparator.comparing(Estacion::getBicisDisponibles).thenComparing(Comparator.naturalOrder()))
+				.orElse(null);
 	}
 	
 	public static Integer getTotalPuestos(List<Estacion> estaciones) {

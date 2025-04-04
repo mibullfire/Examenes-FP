@@ -17,5 +17,8 @@ public class Testing {
 		
 		Integer total = Operaciones.getTotalPuestos(espacios);
 		System.out.println(total);
+		
+		Estacion muchasBicis = Operaciones.getEstacionMasBicisDisponibles(espacios);
+		System.out.println(muchasBicis);
 	}
 }
