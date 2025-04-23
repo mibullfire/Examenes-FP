@@ -2,9 +2,12 @@ package sevici.tipos;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Operaciones {
@@ -47,6 +50,30 @@ public class Operaciones {
 		return estaciones.stream()
 				.filter(e -> e.getUbicacion().getDistanciaHaversine(cs) <= distancia)
 				.allMatch(e->e.getTieneBicis());
+	}
+	
+	public static Map<Integer, List<Estacion>> estacioesPorBicisDisponibles(List<Estacion> estaciones){
+		Map<Integer, List<Estacion>> res = new HashMap<Integer, List<Estacion>>();
+		for(Estacion e: estaciones) {
+			Integer clave = e.getBicisDisponibles();
+			if (res.containsKey(clave)) {
+				res.get(clave).add(e);
+			} else {
+				List<Estacion> valor = new ArrayList<Estacion>();
+				valor.add(e);
+				res.put(clave, valor);
+			}
+		}
+		return res;
+	}
+	
+	public static Map<Integer, List<Estacion>> estacionesporBicisDisponibles(List<Estacion> estaciones){
+		return estaciones.stream().collect(Collectors.groupingBy(v->v.getBicisDisponibles()));
+	}
+	
+	public static Map<Integer, Integer> numestacionesporBicisDisponibles(List<Estacion> estaciones){
+		Function<Long, Integer> funcion = l->l.intValue();
+		return estaciones.stream().collect(Collectors.groupingBy(v->v.getBicisDisponibles(), Collectors.collectingAndThen(Collectors.counting(), funcion)));
 	}
 
 }
