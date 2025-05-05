@@ -1,6 +1,8 @@
 package fp.nobel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -67,20 +69,59 @@ public class PremiosBucles implements Premios {
 
 	@Override
 	public Map<Genero, Integer> calcularNumeroPremiosPorGenero() {
-		// TODO Auto-generated method stub
-		return null;
+		Map<Genero, Integer> res = new HashMap<Genero, Integer>();
+		for (Premio p: premios) {
+			if (res.containsKey(p.genero())) {
+				int valor = res.get(p.genero());
+				res.put(p.genero(), valor+1);
+			} else {
+				res.put(p.genero(), 1);
+			}
+		}
+		return res;
 	}
 
 	@Override
 	public Map<Integer, Set<Premio>> calcularPremiosPorEdad() {
-		// TODO Auto-generated method stub
-		return null;
+		Map<Integer, Set<Premio>> res = new HashMap<Integer, Set<Premio>>();
+		for (Premio p: premios) {
+			if (res.containsKey(p.edadPremiado())) {
+				Set<Premio> valor = res.get(p.edadPremiado());
+				valor.add(p);
+				res.put(p.edadPremiado(), valor);
+			} else {
+				res.put(p.edadPremiado(), new HashSet<Premio>());
+			}
+		}
+		return res;
 	}
 
 	@Override
 	public Map<String, Double> calcularMediaEdadPorCategoria() {
-		// TODO Auto-generated method stub
-		return null;
+		Map<String, Double> res = new HashMap<String, Double>();
+		Map<String, List<Integer>> aux = new HashMap<String, List<Integer>>();
+		for(Premio p: premios) {
+			if (aux.containsKey(p.categoria())) {
+				List<Integer> lista = aux.get(p.categoria());
+				lista.add(p.edadPremiado());
+				res.put(p.categoria(), null);
+			} else {
+				List<Integer> lista = new ArrayList<Integer>(p.edadPremiado());
+				aux.put(p.categoria(), lista);
+			}
+		}
+		
+		for (String clave: aux.keySet()) {
+			List<Integer> lista = aux.get(clave);
+			int suma = 0;
+			for(int i: lista) {
+				suma += i;
+			}
+			Double media = (double) suma / lista.size();
+			res.put(clave, media);
+		}
+		
+		return res;
 	}
 
 }
