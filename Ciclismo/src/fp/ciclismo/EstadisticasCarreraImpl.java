@@ -3,11 +3,13 @@ package fp.ciclismo;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
@@ -171,7 +173,8 @@ public class EstadisticasCarreraImpl implements EstadisticasCarrera {
 
 	@Override
 	public String getNacionalidadMasGanadores() {
-		return null;
+		return ganadores.stream().collect(Collectors.groupingBy(Ganador::nacionalidad, Collectors.counting()))
+				.entrySet().stream().max(Map.Entry.comparingByValue()).map(Map.Entry::getKey).orElse(null);
 	}
 	@Override
 	public Map<String, List<Ganador>> getMasDiasMaillotPorNacionalidad(Integer n) {
@@ -187,14 +190,20 @@ public class EstadisticasCarreraImpl implements EstadisticasCarrera {
 
 	@Override
 	public List<String> getNacionalidadesGanadores() {
-		// TODO Auto-generated method stub
-		return null;
+		return ganadores.stream().map(x->x.nacionalidad()).sorted(Comparator.comparing(x->x)).toList();
 	}
 
 	@Override
+	/*
 	public List<String> getCiclistasTop(Integer n) {
-		// TODO Auto-generated method stub
-		return null;
+		Map<String, Integer> aux = ganadores.stream().collect(Collectors.groupingBy(Ganador::nombre, ()->new TreeMap<String, Integer>(),Collectors.collectingAndThen(Collectors.toList(), lista->(int) lista.stream().count())));
+		aux.entrySet().stream().sorted(Map.Entry.comparingByValue()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2)->e1, LinkedHashMap::new));
+		return aux.entrySet().stream().map(x->x.getKey()).limit(n).toList();
+	}
+	*/
+	public List<String> getCiclistasTop(Integer n){
+		return ganadores.stream().collect(Collectors.groupingBy(Ganador::nombre, Collectors.counting()))
+				.entrySet().stream().sorted(Map.Entry.comparingByValue()).map(Map.Entry::getKey).toList();
 	}
 	
 }
